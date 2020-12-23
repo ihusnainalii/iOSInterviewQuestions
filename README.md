@@ -25,8 +25,7 @@ A higher order function is a function that takes one or more functions as argume
 
 ## 5. What benefits do generics have? How can you define a generic function in Swift?
 Generic code enables you to avoid code duplication by writing flexible and reusable components. You can define a generic function by putting the placeholder type name inside angle brackets right after the function name.
-
-func methodName<T>(parameterName: T)
+	func methodName<T>(parameterName: T)
 You can then use this generic type for parameters or as return type. An indepth explanation with examples is available in the official Swift documentation.
 
 ## 6. What is a protocol associated type in Swift?
@@ -34,11 +33,11 @@ Associated types are a powerful way of making protocols generic. You can declare
 
 ## 7. What is protocol composition?
 Protocol compositions can be created by combining two or more protocols with a & sign. This is really useful when you want a type to conform to multiple protocols at the same time.
-func methodName(paramterName: ProtocolOne & ProtocolTwo)
+	func methodName(paramterName: ProtocolOne & ProtocolTwo)
 
 ## 8. What are opaque types in Swift? Where can opaque types be useful?
 To define a type as opaque, you can use the some keyword.
-func methodName() -> some ProtocolName
+	func methodName() -> some ProtocolName
 Opaque types give developers the capability to return a concrete type without having to expose it. Returning an opaque type is almost like returning a protocol. In both cases, the caller cannot see the concrete type. The difference is that unlike protocols, an opaque type still refers to a specific type.
 An indepth explanation with examples is available in the official Swift documentation.
 
@@ -57,8 +56,8 @@ For detecting memory leaks, Xcode offers a built-in debug memory graph. An alter
 -------------------------------------- 
 ## 1. What are the main components of a HTTP URL? What purpose do they have?
 Every HTTP URL consists of the following components:
-scheme://host:port/path?query
 
+    scheme://host:port/path?query
     Scheme - The scheme identifies the protocol used to access a resource, e.g. http or https.
     Host - The host name identifies the host that holds the resource.
     Port - Host names can optionally be followed by a port number to specify what service is being requested.
@@ -77,26 +76,30 @@ Other HTTP request methods are HEAD, OPTIONS, PATCH etc.
 
 ## 3. How would you create a HTTP request in iOS?
 One way of creating a HTTP request in iOS is by using URLRequest with URLComponents.
-var components = URLComponents()
-components.scheme = "https"
-components.host = "api.github.com"
-components.path = "/search/repositories"
-components.queryItems = [
-    URLQueryItem(name: "q", value: "swift"),
-    URLQueryItem(name: "sort", value: "stars")
-]
+	
+	var components = URLComponents()
+	components.scheme = "https"
+	components.host = "api.github.com"
+	components.path = "/search/repositories"
+	components.queryItems = [
+	    URLQueryItem(name: "q", value: "swift"),
+	    URLQueryItem(name: "sort", value: "stars")
+	]
 
-let url = components.url
+	let url = components.url
+	
 With URLComponents you can easily define the URL components and then create a URLRequest out of it.
 
 ## 4. How would you send and receive HTTP requests in iOS?
 One possibility for sending and receiving HTTP requests is by using URLSession. With URLSessionConfiguration, you can configure caching behaviour, timeout values and HTTP headers.
 A session works with tasks. After creating a session you can use URLSessionDataTask to send a request and to get the response:
-let urlSession = URLSession(configuration: .default)
-let task = urlSession.dataTask(with: url) { data, response, error in
-    // Handle response.
-}
-task.resume()
+
+	let urlSession = URLSession(configuration: .default)
+	let task = urlSession.dataTask(with: url) { data, response, error in
+	    // Handle response.
+	}
+	task.resume()
+	
 You can also use URLSessionDownloadTask to download and URLSessionUploadTask to upload files. You can suspend, resume and cancel tasks.
 
 ## 5. The server response contains a HTTP status code. Give some examples and explain their meaning.
@@ -129,19 +132,21 @@ The complex data types are object and array. An object is an unordered set of na
 
 ## 8. How would you convert a JSON response into native Swift types?
 Swift’s Codable protocol makes it easy to convert JSON to native Swift structs and classes. The first step is to define a Swift type that has the same keys and value types as the JSON and conforms to Codable. For example:
-struct Doggy: Codable {
-	let name: String 
-	let age: Int 
-}
+
+	struct Doggy: Codable {
+		let name: String 
+		let age: Int 
+	}
 
 Then we can use JSONDecoder to convert:
-let decoder = JSONDecoder()
-do {
-    let doggies = try decoder.decode([Doggy].self, from: jsonData)
-    print(people)
-} catch {
-    print(error.localizedDescription)
-}
+
+	let decoder = JSONDecoder()
+	do {
+	    let doggies = try decoder.decode([Doggy].self, from: jsonData)
+	    print(people)
+	} catch {
+	    print(error.localizedDescription)
+	}
 
 ## 9. What is the basic idea behind the OAuth protocol?
 OAuth lets users grant third-party services access to their web resources, without sharing their passwords. This is possible though a security object known as access token.
@@ -187,77 +192,81 @@ let serialQueue = DispatchQueue(label: "serialQueue")
 let concurrentQueue = DispatchQueue(label: "concurrentQueue", attributes: .concurrent)
 
 ## 3. When you review the code below, would you suggest an improvement?
-DispatchQueue.global(qos: .background).async {
-    let text = loadDescription()
-    label.text = text
-}
+	DispatchQueue.global(qos: .background).async {
+	    let text = loadDescription()
+	    label.text = text
+	}
+	
 Yes. UIKit can only be used from our app’s main queue, so the label's text shouldn't be set on a background queue. One possible way to solve this is to call the UI update code on the main queue.
-DispatchQueue.global(qos: .background).async {
-    let text = loadDescription()
-    DispatchQueue.main.async {
-        label.text = text
-    }
-}
+	
+	DispatchQueue.global(qos: .background).async {
+	    let text = loadDescription()
+	    DispatchQueue.main.async {
+		label.text = text
+	    }
+	}
 
 ## 4. What is the difference between asynchronous and synchronous tasks?
 Synchronously starting a task blocks the calling thread until the task is finished. Asynchronously starting a task returns directly on the calling thread without blocking.
 
 ## 5. How can you cancel a running asynchronous task?
 In GCD, you can achieve that with DispatchWorkItem. By setting it up with the task that needs to be done asynchroniously and calling the cancel method when needed.
-let workItem = DispatchWorkItem { [weak self] in
-    // Execute time consuming code.
-}
-// Start the task.
-DispatchQueue.main.async(execute: workItem)
-// Cancel the task.
-workItem.cancel()
+
+	let workItem = DispatchWorkItem { [weak self] in
+	    // Execute time consuming code.
+	}
+	// Start the task.
+	DispatchQueue.main.async(execute: workItem)
+	// Cancel the task.
+	workItem.cancel()
 
 By using Operations, it's almost the same as with GCD. You can use the cancel method on the operation.
-let queue = OperationQueue()
-let blockOperation = BlockOperation {
-    // Execute time consuming code.
-}
-// Start the operation.
-queue.addOperation(blockOperation)
-// Cancel the operation.
-blockOperation.cancel()
+
+	let queue = OperationQueue()
+	let blockOperation = BlockOperation {
+	    // Execute time consuming code.
+	}
+	// Start the operation.
+	queue.addOperation(blockOperation)
+	// Cancel the operation.
+	blockOperation.cancel()
 
 ## 6. How can you group asynchronous tasks?
 
 By using GCD, you can use DispatchGroup to achieve this.
 
-let group = DispatchGroup()
+	let group = DispatchGroup()
 
-// The 'enter' method increments the group's task count.
-group.enter()
-dataSource1.load { result in
-    // Save the result.
-    group.leave()
-}
+	// The 'enter' method increments the group's task count.
+	group.enter()
+	dataSource1.load { result in
+	    // Save the result.
+	    group.leave()
+	}
 
-group.enter()
-dataSource2.load { result in
-    // Save the result.
-    group.leave()
-}
+	group.enter()
+	dataSource2.load { result in
+	    // Save the result.
+	    group.leave()
+	}
 
-// This closure is called when the group's task count reaches 0.
-group.notify(queue: .main) { [weak self] in
-    // Show the loaded results.
-}
+	// This closure is called when the group's task count reaches 0.
+	group.notify(queue: .main) { [weak self] in
+	    // Show the loaded results.
+	}
 
 When working with operations, you can add dependencies between them.
 
-let operation1 = BlockOperation {
-    // Execute time consuming code.
-}
-let operation2 = BlockOperation {
-    // Execute time consuming code.
-}
-let operation3 = BlockOperation {
-    // operation1 and operation2 are finished.
-}
-operation3.addDependency(operation1)
+	let operation1 = BlockOperation {
+	    // Execute time consuming code.
+	}
+	let operation2 = BlockOperation {
+	    // Execute time consuming code.
+	}
+	let operation3 = BlockOperation {
+	    // operation1 and operation2 are finished.
+	}
+	operation3.addDependency(operation1)
 operation3.addDependency(operation2)
 
 ## 7. What is a race condition?
@@ -268,15 +277,15 @@ Data races can be the root cause behind unpredicatable program behaviours and we
 ## 8. How can you avoid race conditions?
 To avoid race conditions you can access the data on the same serial queue or you can use a concurrent queue with a barrier flag. A barrier flag makes access to the data thread-safe.
 
-var queue = DispatchQueue(label: "messages.queue", attributes: .concurrent)
+	var queue = DispatchQueue(label: "messages.queue", attributes: .concurrent)
 
-queue.sync {
-    // Code for accessing data
-}
+	queue.sync {
+	    // Code for accessing data
+	}
 
-queue.sync(flags: .barrier) {
-    // Code for writing data
-}
+	queue.sync(flags: .barrier) {
+	    // Code for writing data
+	}
 
 The barrier flag approach has the benefit of synchronizing write access while reading can still be done concurrently. By using a barrier, a concurrent queue becomes a serial queue for a moment. A task with a barrier is delayed until all running tasks are finished. When the last task is finished, the queue executes the barrier block and continues it's concurrent behavior after that.
 
@@ -307,9 +316,12 @@ The main difference between the ViewModel from MVVM and the Controller from MVC 
 
 ## 3. Explain the observer design pattern. What options do you have to implement the observer design pattern in Swift?
 The observer design pattern is characterized by two elements:
+    
     A value being observed (an observable), which notifies all observers if a change happens.
     An observer, who subscribes to changes of the observable.
+    
 Existing solutions of the observer pattern in iOS are:
+    
     Notifications
     Key-Value Observing
     Publishers (observables) and Subscribers (observers) of the Combine Framework
@@ -317,12 +329,13 @@ Existing solutions of the observer pattern in iOS are:
 ## 4. What is a singleton design pattern? When would you use and when would you avoid singletons?
 The singleton design pattern ensures that only one instance exists for a given class.
 In Swift, this pattern is easy to implement:
-class ChocolateFactory {
-    static let shared: ChocolateFactory = {
-        let instance = ChocolateFactory()
-        return instance
-    }()
-}
+
+	class ChocolateFactory {
+	    static let shared: ChocolateFactory = {
+		let instance = ChocolateFactory()
+		return instance
+	    }()
+	}
 
 A singleton is useful when exactly one object is needed to coordinate actions across the app. A good example is Apple's UIApplication.shared instance, because within the app there should be only one instance of the UIApplication class.
 
@@ -337,31 +350,31 @@ The delegate design pattern allows an object to communicate back to its owner in
 The factory design pattern is a way to encapsulate the implementation details of creating objects. It separates the creation from the usage of the objects. The initialization is done in a central place. So when the initialization logic of certain objects changes, you don't need to change every creation in the whole project.
 
 Example of a simple factory:
-class ChocolateFactory {
-    static func produceChocolate(of type: ChocolateType) -> Chocolate {
-        switch type {
-        case .dark:
-            return DarkChocolate()
-        case .raw:
-            return RawChocolate()
-        }
-    }
-}
+
+	class ChocolateFactory {
+	    static func produceChocolate(of type: ChocolateType) -> Chocolate {
+		switch type {
+		case .dark:
+		    return DarkChocolate()
+		case .raw:
+		    return RawChocolate()
+		}
+	    }
+	}
 
 The facade design pattern provides a simpler interface for a complex subsystem. Instead of exposing a lot of classes and their APIs, you only expose one unified API. The facade pattern improves the readability and usability. It also decouples and reduces dependencies. If implementation details under the facade change, the facade can retain the same API while things change behind the scenes.
 
 For example, you could create a ChocolateShopService and hide all the http requests and persistence details behind it.
 
-class ChocolateShopService {
-
-    func getChocolates() -> [Chocolate] {
-        if isOnline {
-            return httpClient.get("/api/chocolates")
-        } else {
-            return localStore.getChocolates()
-        }
-    }
-}
+	class ChocolateShopService {
+	    func getChocolates() -> [Chocolate] {
+		if isOnline {
+		    return httpClient.get("/api/chocolates")
+		} else {
+		    return localStore.getChocolates()
+		}
+	    }
+	}
 
 ## 6. How can you avoid the problem of so called spaghetti code?
 
@@ -385,15 +398,16 @@ Limitations TDD only focuses on unit tests, it does not cover UI or integration 
 ## 9. What are good use cases to use extensions in Swift?
 An extension in Swift is a powerful way to add new functionality to existing classes, structures or enums without modifying its code.
 For example, accessing an array element leads to a crash if the specified index doesn't exist. To avoid a crash, you could wrap every access in an if-block. A more elegant solution with an extension looks like this:
-extension Array {
-    /// Returns the element at the specified index if it is within bounds, otherwise nil.
-    subscript(safe index: Index) -> Iterator.Element? {
-        return indices.contains(index) ? self[index] : nil
-    }
-}
 
-// Usage:
-let value = someArray[safe: 6]
+	extension Array {
+	    /// Returns the element at the specified index if it is within bounds, otherwise nil.
+	    subscript(safe index: Index) -> Iterator.Element? {
+		return indices.contains(index) ? self[index] : nil
+	    }
+	}
+
+	// Usage:
+	let value = someArray[safe: 6]
 
 ## 10. What is your understanding of protocol oriented programming?
 Protocol oriented programming is a concept of designing your code base by using protocols. In Swift, protocols provide an extensive set of features, so they have become a powerful way of managing code complexity and creating modular testable components.
@@ -402,19 +416,19 @@ Like classes, protocols also support inheritence. For example, the Comparable pr
 typealias Codable = Decodable & Encodable
 To implement default behaviour with protocols, you can use protocol extensions.
 
-protocol Chocolate {
-    var hasSugar: Bool { get }
-}
+	protocol Chocolate {
+	    var hasSugar: Bool { get }
+	}
 
-extension Chocolate {
-    var hasSugar: Bool {
-        return true
-    }
-}
+	extension Chocolate {
+	    var hasSugar: Bool {
+		return true
+	    }
+	}
 
-struct DarkChocolate: Chocolate {
-    // hasSugar is true by default
-}
+	struct DarkChocolate: Chocolate {
+	    // hasSugar is true by default
+	}
 
 This way, all types that conform to the same protocol will get the default behaviour.
 
